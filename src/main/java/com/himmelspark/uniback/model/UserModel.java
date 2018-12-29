@@ -2,68 +2,48 @@ package com.himmelspark.uniback.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
+@DynamicUpdate //TODO поставил с надеждой, что save позволит обновить
 public class UserModel {
 
     @JsonCreator
-    public UserModel(
+    public UserModel (
             @JsonProperty("usename") String username,
             @JsonProperty("email") String email,
-            @JsonProperty("password") String password
+            @JsonProperty("password") String password,
+            Boolean enabled
     ) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.enabled = (enabled != null && enabled);
     }
 
     protected UserModel(){}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Getter @Setter private Long id;
 
     @Column
-    private String username;
+    @Getter @Setter private String username;
 
     @Column
-    private String email;
+    @Getter @Setter private String email;
 
     @Column
-    private String password;
+    @Getter @Setter private String password;
 
-    public Long getId() {
-        return id;
-    }
+    @Transient
+    @Column(name = "enabled")
+    @Getter @Setter private Boolean enabled;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }
