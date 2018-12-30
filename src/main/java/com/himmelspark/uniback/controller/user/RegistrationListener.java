@@ -1,11 +1,10 @@
 package com.himmelspark.uniback.controller.user;
 
 import com.himmelspark.uniback.model.UserModel;
+import com.himmelspark.uniback.service.mail.MyMailSender;
 import com.himmelspark.uniback.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -15,10 +14,10 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
 
     private final UserService userService;
 
-    private final JavaMailSender mailSender;
+    private final MyMailSender mailSender;
 
     @Autowired
-    public RegistrationListener(UserService userService, JavaMailSender mailSender) {
+    public RegistrationListener(UserService userService, MyMailSender mailSender) {
         this.userService = userService;
         this.mailSender = mailSender;
     }
@@ -37,11 +36,13 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         String subject = "Registration Confirmation";
         String confirmationURL = event.getAppURL() + "/registrationConfirm/" +
                 user.getId().toString() + "/" + token;
+        String body = "http://localhost:5000/users" + confirmationURL;
 
-        SimpleMailMessage email = new SimpleMailMessage();
-        email.setTo(recipientAddress);
-        email.setSubject(subject);
-        email.setText("http://localhost:5000/users" + confirmationURL);
-        mailSender.send(email);
+        mailSender.sendMail(
+            "adam404pet@gmail.com",
+            recipientAddress,
+            subject,
+            body
+        );
     }
 }

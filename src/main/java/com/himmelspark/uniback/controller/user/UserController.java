@@ -6,6 +6,7 @@ import com.himmelspark.uniback.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
@@ -29,8 +30,8 @@ public class UserController {
         this.eventPublisher = eventPublisher;
     }
 
-    @PostMapping(path = "register")
-    public ResponseEntity<?> register(
+    @PostMapping(path = "register", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> register (
             HttpSession session,
             @RequestBody UserModel user,
             WebRequest request
