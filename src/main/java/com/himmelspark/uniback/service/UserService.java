@@ -7,6 +7,8 @@ import com.himmelspark.uniback.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class UserService {
 
@@ -19,8 +21,23 @@ public class UserService {
         this.tokensRepository = tokensRepository;
     }
 
+    @Transactional
     public UserModel createUser(UserModel user) {
-        return usersRepository.save(user);
+        try {
+            return usersRepository.save(user);
+        } catch (Exception e) {
+            return null; //TODO эксепшон вроде как анчекд будет, разобраться, как сделать так, чтобы не возникало
+        }
+    }
+
+    @Transactional
+    public UserModel enableUser(UserModel user) {
+        return usersRepository.enableUserByEmail(user.getEmail());
+    }
+
+    @Transactional
+    public UserModel disableUser(UserModel user) {
+        return usersRepository.disableUserByEmail(user.getEmail());
     }
 
     public boolean checkUser(String email, String password) {

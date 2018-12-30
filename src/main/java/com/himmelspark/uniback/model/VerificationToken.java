@@ -25,6 +25,7 @@ public class VerificationToken {
     @JoinColumn(nullable = false, name = "id")
     @Getter @Setter private UserModel user;
 
+    @Transient
     @Getter @Setter private Date expiryDate;
 
     public VerificationToken(){}
