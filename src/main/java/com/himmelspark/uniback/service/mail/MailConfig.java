@@ -9,6 +9,12 @@ import java.util.Properties;
 
 //TODO где-то надо указать логин пароль от почты, может тут в конфиге, а может тут магия протоколов, пока хз
 
+/**
+ * public class MyConstants {
+ * * public static String EMAIL = "somemail@mail.ru;
+ * * public static String PASSWORD = "somepassword";
+ * }
+ */
 @Configuration
 public class MailConfig {
 
@@ -18,7 +24,8 @@ public class MailConfig {
 
         javaMailSender.setHost("smtp.gmail.com");
         javaMailSender.setPort(587);
-
+        javaMailSender.setUsername(MyConstants.EMAIL);
+        javaMailSender.setPassword(MyConstants.PASSWORD);
         javaMailSender.setJavaMailProperties(getMailProperties());
 
         return javaMailSender;
@@ -27,10 +34,9 @@ public class MailConfig {
     private Properties getMailProperties() {
         Properties properties = new Properties();
         properties.setProperty("mail.transport.protocol", "smtp");
-        properties.setProperty("mail.smtp.auth", "false");
-        properties.setProperty("mail.smtp.starttls.enable", "false");
-        properties.setProperty("mail.debug", "false");
+        properties.setProperty("mail.smtp.auth", "true");
+        properties.setProperty("mail.smtp.starttls.enable", "true");
+        properties.setProperty("mail.debug", "true");
         return properties;
     }
-
 }
