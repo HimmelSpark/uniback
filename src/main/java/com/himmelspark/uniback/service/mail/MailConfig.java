@@ -16,8 +16,8 @@ public class MailConfig {
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
 
-        javaMailSender.setHost("myHost"); //TODO что за хост?
-        javaMailSender.setPort(25);
+        javaMailSender.setHost("smtp.gmail.com");
+        javaMailSender.setPort(587);
 
         javaMailSender.setJavaMailProperties(getMailProperties());
 
