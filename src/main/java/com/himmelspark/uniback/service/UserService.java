@@ -48,7 +48,8 @@ public class UserService {
     public Tokens createVerificationToken(UserModel user, String token) {
         Tokens vToken = new Tokens(user.getId(), token);
         vToken.setToken(token);
-        vToken.setId(user.getId());
+//        vToken.setId(user.getId());
+        vToken.setUser(user);
         return tokensRepository.save(vToken);
     }
 

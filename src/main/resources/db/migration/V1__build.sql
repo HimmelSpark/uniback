@@ -12,8 +12,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS tokens (
-  id SERIAL NOT NULL PRIMARY KEY,
-  userr NUMERIC NOT NULL ,
-  FOREIGN KEY (userr) REFERENCES users(id),
-  token citext NOT NULL
+  user_id SERIAL NOT NULL PRIMARY KEY,
+  token citext NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id)
 );

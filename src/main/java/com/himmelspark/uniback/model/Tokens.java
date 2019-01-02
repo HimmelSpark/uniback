@@ -3,7 +3,6 @@ package com.himmelspark.uniback.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -18,14 +17,14 @@ public class Tokens {
     private static final int EXPIRATION = 60 * 24;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "user_id")
     @Getter @Setter private Long id;
 
     @Column(name = "token")
     @Getter @Setter private String token;
 
-    @OneToOne(targetEntity = UserModel.class, fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "id")
+    @OneToOne
+    @MapsId
     @Getter @Setter private UserModel user;
 
 //    @Column(insertable = false, updatable = false)

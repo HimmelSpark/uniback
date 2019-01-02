@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.web.bind.annotation.Mapping;
 
 import javax.persistence.*;
 
@@ -43,5 +44,8 @@ public class UserModel {
 
     @Column
     @Getter @Setter private Boolean enabled;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @Getter @Setter private Tokens token;
 
 }
