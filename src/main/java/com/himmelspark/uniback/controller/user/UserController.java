@@ -1,7 +1,7 @@
 package com.himmelspark.uniback.controller.user;
 
+import com.himmelspark.uniback.model.Tokens;
 import com.himmelspark.uniback.model.UserModel;
-import com.himmelspark.uniback.model.VerificationToken;
 import com.himmelspark.uniback.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -44,14 +44,14 @@ public class UserController {
             //TODO регистрация не прошла, может с таким email уже было
             return ResponseEntity.status(HttpStatus.CONFLICT).body("duplicate email");
         }
-        try {
+//        try {
             String appURL = request.getContextPath();
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(appURL, createdUser));
-        } catch (Exception e) {
-            //TODO чет пошло не так, может несуществующая почта
-            //TODO хотя конечно надо из хэндлера кидать эксепшоны и тут ловить
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("your GF email");
-        }
+//        } catch (Exception e) {
+//            //TODO чет пошло не так, может несуществующая почта
+//            //TODO хотя конечно надо из хэндлера кидать эксепшоны и тут ловить
+//            return ResponseEntity.status(HttpStatus.CONFLICT).body("your GF email");
+//        }
         return ResponseEntity.status(HttpStatus.OK).body("Watch your mail, motherfucker!");
     }
 
@@ -60,8 +60,8 @@ public class UserController {
             @PathVariable("uID") String uID,
             @PathVariable("token") String token
     ) {
-        VerificationToken verificationToken = userService.getVerificationToken(token);
-        if (verificationToken == null) {
+        Tokens tokens = userService.getVerificationToken(token);
+        if (tokens == null) {
             //TODO если такого токена не нашлось, значит ссылка не валидна
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("your verification link is invalid like your mom!");
@@ -69,12 +69,12 @@ public class UserController {
 
         //TODO добавить проверку id пользователя. Чет писали про защиту от ЦЭЭСЭРЭФ атак
 
-        UserModel user = verificationToken.getUser();
+        UserModel user = tokens.getUser();
         Calendar cal = Calendar.getInstance();
-        if (verificationToken.getExpiryDate().getTime() - cal.getTime().getTime() <= 0) {
-            //TODO если срок жизни токена истек
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("So slow! Your token has expired!");
-        }
+//        if (tokens.getExpiryDate().getTime() - cal.getTime().getTime() <= 0) {
+//            //TODO если срок жизни токена истек
+//            return ResponseEntity.status(HttpStatus.CONFLICT).body("So slow! Your token has expired!");
+//        }
 
         user.setEnabled(true);
         userService.saveRegisteredUser(user);

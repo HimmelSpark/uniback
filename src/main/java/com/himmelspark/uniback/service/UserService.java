@@ -1,7 +1,7 @@
 package com.himmelspark.uniback.service;
 
+import com.himmelspark.uniback.model.Tokens;
 import com.himmelspark.uniback.model.UserModel;
-import com.himmelspark.uniback.model.VerificationToken;
 import com.himmelspark.uniback.repository.TokensRepository;
 import com.himmelspark.uniback.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class UserService {
         this.tokensRepository = tokensRepository;
     }
 
-    @Transactional
+//    @Transactional
     public UserModel createUser(UserModel user) {
         try {
             return usersRepository.save(user);
@@ -45,14 +45,14 @@ public class UserService {
         return db_user.getPassword().equals(password);
     }
 
-    public VerificationToken createVerificationToken(UserModel user, String token) {
-        VerificationToken vToken = new VerificationToken();
+    public Tokens createVerificationToken(UserModel user, String token) {
+        Tokens vToken = new Tokens(user.getId(), token);
         vToken.setToken(token);
         vToken.setId(user.getId());
         return tokensRepository.save(vToken);
     }
 
-    public VerificationToken getVerificationToken(String token) {
+    public Tokens getVerificationToken(String token) {
         return tokensRepository.getVerificationTokenByToken(token);
     }
 
