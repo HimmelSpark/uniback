@@ -53,35 +53,37 @@ public class UserController {
             userService.removeUserAndToken(createdUser);
             return ResponseEntity.status(HttpStatus.OK).body("registration not available");
         } catch (MailSendException e) {
+            userService.removeUserAndToken(createdUser);
             return ResponseEntity.status(HttpStatus.CONFLICT).body("incorrect email");
         }
-
         return ResponseEntity.status(HttpStatus.OK).body("Watch your mail, motherfucker!");
     }
 
     @GetMapping(path = "/registrationConfirm/{uID}/{token}")
     public ResponseEntity<?> confirmRegistration (
             @PathVariable("uID") String uID,
-            @PathVariable("token") String token
+            @PathVariable("token") String token,
+            HttpSession session
     ) {
         Tokens tokens = userService.getVerificationToken(token);
         if (tokens == null) {
-            //TODO если такого токена не нашлось, значит ссылка не валидна
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("your verification link is invalid like your mom!");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("invalid token");
+        }
+        Tokens token4security = userService.getVerificationTokenById(Long.parseLong(uID));
+        if (tokens != token4security) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("invalid link");
         }
 
-        //TODO добавить проверку id пользователя. Чет писали про защиту от ЦЭЭСЭРЭФ атак
-
         UserModel user = tokens.getUser();
-        Calendar cal = Calendar.getInstance();
+//        Calendar cal = Calendar.getInstance();
 //        if (tokens.getExpiryDate().getTime() - cal.getTime().getTime() <= 0) {
 //            //TODO если срок жизни токена истек
 //            return ResponseEntity.status(HttpStatus.CONFLICT).body("So slow! Your token has expired!");
 //        }
 
         user.setEnabled(true);
-        userService.saveRegisteredUser(user);
+//        userService.saveRegisteredUser(user);
+        userService.enableUser(user);
         return ResponseEntity.status(HttpStatus.OK).body("account successfully activated");
     }
 

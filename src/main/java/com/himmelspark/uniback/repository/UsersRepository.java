@@ -10,7 +10,7 @@ public interface UsersRepository extends JpaRepository<UserModel, Long> {
 
     @Modifying
     @Query("UPDATE UserModel SET enabled=true WHERE email=?1")
-    UserModel enableUserByEmail(String email);
+    void enableUserByEmail(String email);
 
     @Modifying
     @Query("UPDATE UserModel SET enabled=false WHERE email=?1")

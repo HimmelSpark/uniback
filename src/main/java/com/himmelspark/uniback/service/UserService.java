@@ -36,8 +36,8 @@ public class UserService {
         usersRepository.delete(user);
     }
 
-    public UserModel enableUser(UserModel user) {
-        return usersRepository.enableUserByEmail(user.getEmail());
+    public void enableUser(UserModel user) {
+        usersRepository.enableUserByEmail(user.getEmail());
     }
 
     public UserModel disableUser(UserModel user) {
@@ -58,6 +58,10 @@ public class UserService {
 
     public Tokens getVerificationToken(String token) {
         return tokensRepository.getVerificationTokenByToken(token);
+    }
+
+    public Tokens getVerificationTokenById(Long iD) {
+            return tokensRepository.findTokensById(iD);
     }
 
     public void saveRegisteredUser(UserModel userModel) {

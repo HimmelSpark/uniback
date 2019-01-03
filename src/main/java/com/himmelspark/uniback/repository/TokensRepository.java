@@ -7,4 +7,6 @@ public interface TokensRepository extends JpaRepository<Tokens, Long> {
 
     Tokens getVerificationTokenByToken(String token);
 
+    Tokens findTokensById(Long iD);
+
 }
