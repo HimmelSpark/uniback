@@ -22,7 +22,8 @@ public class MailConfig {
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
 
-        javaMailSender.setHost("smtp.gmail.com");
+//        javaMailSender.setHost("smtp.gmail.com");
+        javaMailSender.setHost("smtp.mail.ru");
         javaMailSender.setPort(587);
         javaMailSender.setUsername(MyConstants.EMAIL);
         javaMailSender.setPassword(MyConstants.PASSWORD);

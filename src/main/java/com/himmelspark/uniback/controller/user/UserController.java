@@ -8,6 +8,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailAuthenticationException;
+import org.springframework.mail.MailSendException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
@@ -41,17 +43,19 @@ public class UserController {
         }
         UserModel createdUser = this.userService.createUser(user);
         if (createdUser == null) {
-            //TODO регистрация не прошла, может с таким email уже было
             return ResponseEntity.status(HttpStatus.CONFLICT).body("duplicate email");
         }
-//        try {
+        try {
             String appURL = request.getContextPath();
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(appURL, createdUser));
-//        } catch (Exception e) {
-//            //TODO чет пошло не так, может несуществующая почта
-//            //TODO хотя конечно надо из хэндлера кидать эксепшоны и тут ловить
-//            return ResponseEntity.status(HttpStatus.CONFLICT).body("your GF email");
-//        }
+        } catch (MailAuthenticationException e) {
+            //TODO залогировать красненьким, что почта недоступна
+            userService.removeUserAndToken(createdUser);
+            return ResponseEntity.status(HttpStatus.OK).body("registration not available");
+        } catch (MailSendException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("incorrect email");
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body("Watch your mail, motherfucker!");
     }
 

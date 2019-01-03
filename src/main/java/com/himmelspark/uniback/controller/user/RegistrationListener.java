@@ -1,6 +1,7 @@
 package com.himmelspark.uniback.controller.user;
 
 import com.himmelspark.uniback.model.UserModel;
+import com.himmelspark.uniback.service.mail.MyConstants;
 import com.himmelspark.uniback.service.mail.MyMailSender;
 import com.himmelspark.uniback.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,12 +35,11 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
 
         String recipientAddress = user.getEmail();
         String subject = "Registration Confirmation";
-        String confirmationURL = event.getAppURL() + "/registrationConfirm/" +
-                user.getId().toString() + "/" + token;
-        String body = "http://localhost:5000/users" + confirmationURL;
+        String confirmationURL = MyConstants.APP_URL_DEBUG + "/registrationConfirm/" + user.getId().toString() + "/" + token;
+        String body = event.getAppURL() + confirmationURL + "\n" + event.getUser().getUsername();
 
-        mailSender.sendMail(
-            "adam404pet@gmail.com",
+        mailSender.sendMail (
+            MyConstants.EMAIL,
             recipientAddress,
             subject,
             body

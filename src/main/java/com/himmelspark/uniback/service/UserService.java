@@ -5,6 +5,7 @@ import com.himmelspark.uniback.model.UserModel;
 import com.himmelspark.uniback.repository.TokensRepository;
 import com.himmelspark.uniback.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -21,21 +22,24 @@ public class UserService {
         this.tokensRepository = tokensRepository;
     }
 
-//    @Transactional
     public UserModel createUser(UserModel user) {
         try {
             return usersRepository.save(user);
-        } catch (Exception e) {
-            return null; //TODO эксепшон вроде как анчекд будет, разобраться, как сделать так, чтобы не возникало
+        } catch (DataIntegrityViolationException e) {
+            return null;
         }
     }
 
-    @Transactional
+    @Transactional //TODO нужно ли? Какие эффекты будут? Будут ли эксепшоны?
+    public void removeUserAndToken(UserModel user) {
+        tokensRepository.deleteById(user.getId());
+        usersRepository.delete(user);
+    }
+
     public UserModel enableUser(UserModel user) {
         return usersRepository.enableUserByEmail(user.getEmail());
     }
 
-    @Transactional
     public UserModel disableUser(UserModel user) {
         return usersRepository.disableUserByEmail(user.getEmail());
     }
@@ -48,7 +52,6 @@ public class UserService {
     public Tokens createVerificationToken(UserModel user, String token) {
         Tokens vToken = new Tokens(user.getId(), token);
         vToken.setToken(token);
-//        vToken.setId(user.getId());
         vToken.setUser(user);
         return tokensRepository.save(vToken);
     }
