@@ -36,6 +36,7 @@ public class UserService {
         usersRepository.delete(user);
     }
 
+    @Transactional
     public void enableUser(UserModel user) {
         usersRepository.enableUserByEmail(user.getEmail());
     }
@@ -49,11 +50,8 @@ public class UserService {
         return db_user.getPassword().equals(password);
     }
 
-    public Tokens createVerificationToken(UserModel user, String token) {
-        Tokens vToken = new Tokens(user.getId(), token);
-        vToken.setToken(token);
-        vToken.setUser(user);
-        return tokensRepository.save(vToken);
+    public Tokens createVerificationToken(Tokens token) {
+        return tokensRepository.save(token);
     }
 
     public Tokens getVerificationToken(String token) {

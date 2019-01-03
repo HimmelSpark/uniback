@@ -75,15 +75,13 @@ public class UserController {
         }
 
         UserModel user = tokens.getUser();
-//        Calendar cal = Calendar.getInstance();
-//        if (tokens.getExpiryDate().getTime() - cal.getTime().getTime() <= 0) {
-//            //TODO если срок жизни токена истек
-//            return ResponseEntity.status(HttpStatus.CONFLICT).body("So slow! Your token has expired!");
-//        }
-
-        user.setEnabled(true);
-//        userService.saveRegisteredUser(user);
+        Calendar cal = Calendar.getInstance();
+        if (tokens.getExpires().getTime() - cal.getTime().getTime() <= 0) {
+            userService.removeUserAndToken(user);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("token timeout passed");
+        }
         userService.enableUser(user);
+        sessionAuth(session, user);
         return ResponseEntity.status(HttpStatus.OK).body("account successfully activated");
     }
 
@@ -97,6 +95,18 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.OK).body("successfully authenticated");
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("wrong credentials");
+    }
+
+    @PostMapping(path = "test")
+    public ResponseEntity<?> test(
+            @RequestBody UserModel user
+    ) {
+        userService.createUser(user);
+        Tokens tokens = new Tokens(user.getId(), "adasdfsdas");
+        tokens.setUser(user);
+        tokens.setExpires();
+        userService.createVerificationToken(tokens);
+        return ResponseEntity.status(HttpStatus.OK).body("test done");
     }
 
     private static void sessionAuth(HttpSession session, UserModel user) {

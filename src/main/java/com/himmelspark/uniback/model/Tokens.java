@@ -27,9 +27,12 @@ public class Tokens {
     @MapsId
     @Getter @Setter private UserModel user;
 
-//    @Column(insertable = false, updatable = false)
-//    @JsonIgnore
-//    @Getter @Setter private Date expiryDate;
+    @Column(name = "expires")
+    @Getter private Date expires;
+
+    public void setExpires() {
+        this.expires = calculateExpiryDate(EXPIRATION);
+    }
 
     protected Tokens(){}
 

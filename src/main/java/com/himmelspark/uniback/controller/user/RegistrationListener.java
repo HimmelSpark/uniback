@@ -1,5 +1,6 @@
 package com.himmelspark.uniback.controller.user;
 
+import com.himmelspark.uniback.model.Tokens;
 import com.himmelspark.uniback.model.UserModel;
 import com.himmelspark.uniback.service.mail.MyConstants;
 import com.himmelspark.uniback.service.mail.MyMailSender;
@@ -31,11 +32,14 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     private void confirmRegistration(OnRegistrationCompleteEvent event) {
         UserModel user = event.getUser();
         String token = UUID.randomUUID().toString();
-        userService.createVerificationToken(user, token);
+        Tokens vToken = new Tokens(user.getId(), token);
+        vToken.setUser(user);
+        vToken.setExpires();
+        userService.createVerificationToken(vToken);
 
         String recipientAddress = user.getEmail();
         String subject = "Registration Confirmation";
-        String confirmationURL = MyConstants.APP_URL_DEBUG + "/registrationConfirm/" + user.getId().toString() + "/" + token;
+        String confirmationURL = MyConstants.APP_URL_DEBUG + "/users/registrationConfirm/" + user.getId().toString() + "/" + token;
         String body = event.getAppURL() + confirmationURL + "\n" + event.getUser().getUsername();
 
         mailSender.sendMail (

@@ -14,5 +14,6 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS tokens (
   user_id SERIAL NOT NULL PRIMARY KEY,
   token citext NOT NULL,
+  expires date,
   FOREIGN KEY (user_id) REFERENCES users(id)
 );
